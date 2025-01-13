@@ -1,19 +1,19 @@
 {
-  "name": "n8n-nodes-<...>",
+  "name": "n8n-nodes-btcpay",
   "version": "0.1.0",
-  "description": "",
+  "description": "BtcPay integration for n8n",
   "keywords": [
     "n8n-community-node-package"
   ],
   "license": "MIT",
   "homepage": "",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Satoshi Engineering",
+    "email": "hello@satoshiengineering.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/<...>/n8n-nodes-<...>.git"
+    "url": "https://github.com/Satoshi-Engineering/n8n-nodes-btcpay.git"
   },
   "engines": {
     "node": ">=18.10",
