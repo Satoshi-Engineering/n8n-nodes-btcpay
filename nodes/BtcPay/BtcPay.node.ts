@@ -72,6 +72,59 @@ export class BtcPay implements INodeType {
 					}
 				},
 			},
+			{
+				displayName: 'Title',
+				name: 'title',
+				type: 'string',
+				required: true,
+				default: '',
+				placeholder: 'Payment title',
+				description: 'The title in BTCPay. E.g. use the order number.',
+				displayOptions: {
+					show: {
+						resource: ['paymentRequest'],
+						operation: ['create']
+					}
+				},
+			},
+			{
+				displayName: 'Additional Fields',
+				name: 'additionalFields',
+				type: 'fixedCollection',
+				default: {},
+				typeOptions: {
+					multipleValueButtonText: 'Add Field to Send',
+					multipleValues: true,
+				},
+				placeholder: 'Add Field',
+				description: 'Add additional fields, e.g. currency. Refer to https://docs.btcpayserver.org/API/Greenfield/v1/#operation/PaymentRequests_CreatePaymentRequest for more information.',
+				options: [
+					{
+						displayName: 'Field',
+						name: 'fieldValues',
+						values: [
+							{
+								displayName: 'Field Name',
+								name: 'fieldName',
+								type: 'string',
+								default: '',
+							},
+							{
+								displayName: 'Field Value',
+								name: 'fieldValue',
+								type: 'string',
+								default: '',
+							},
+						],
+					},
+				],
+				displayOptions: {
+					show: {
+						resource: ['paymentRequest'],
+						operation: ['create']
+					}
+				},
+			}
 		],
 	};
 
