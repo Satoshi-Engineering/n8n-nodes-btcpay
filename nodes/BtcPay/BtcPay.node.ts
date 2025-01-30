@@ -11,7 +11,7 @@ export class BtcPay implements INodeType {
 		displayName: 'BTCPay',
 		name: 'btcPay',
 		icon: 'file:btcPay.svg',
-		group: ['transform'],
+		group: [],
 		version: 1,
 		description: 'BtcPay node with some basic functionality. Will get extended in the future.',
 		defaults: {
@@ -20,15 +20,57 @@ export class BtcPay implements INodeType {
 		inputs: ['main'],
 		outputs: ['main'],
 		properties: [
-			// Node properties which the user gets displayed and
-			// can change on the node.
 			{
-				displayName: 'My String',
-				name: 'myString',
-				type: 'string',
-				default: '',
-				placeholder: 'Placeholder value',
-				description: 'The description text',
+				displayName: 'Resource',
+				name: 'resource',
+				type: 'options',
+				noDataExpression: true,
+				options: [
+					{
+						name: 'PaymentRequest',
+						value: 'paymentRequest',
+					},
+				],
+				default: 'paymentRequest',
+			},
+			{
+				displayName: 'Operation',
+				name: 'operation',
+				type: 'options',
+				noDataExpression: true,
+				displayOptions: {
+					show: {
+						resource: ['paymentRequest'],
+					},
+				},
+				options: [
+					{
+						name: 'Create',
+						value: 'create',
+						description: 'Create a new payment request',
+						action: 'Create a new payment request',
+					},
+				],
+				default: 'create',
+			},
+			{
+				displayName: 'Amount',
+				name: 'amount',
+				type: 'number',
+				required: true,
+				default: 10.00,
+				typeOptions: {
+					minValue: 0,
+					numberPrecision: 2,
+				},
+				placeholder: 'Payment amount',
+				description: 'The amount of the payment request. Has to be greater than 0. Will use the default currency of the store, unless you change it with a custom field "currency".',
+				displayOptions: {
+					show: {
+						resource: ['paymentRequest'],
+						operation: ['create']
+					}
+				},
 			},
 		],
 	};
