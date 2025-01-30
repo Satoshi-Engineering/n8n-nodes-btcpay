@@ -1,4 +1,5 @@
 import {
+	ILoadOptionsFunctions,
 	JsonObject,
 	NodeApiError,
 	type IDataObject,
@@ -28,6 +29,18 @@ export class BtcPay implements INodeType {
 			},
 		],
 		properties: [
+			{
+				displayName: 'Store Name or ID',
+				name: 'storeId',
+				type: 'options',
+				default: '',
+				required: true,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code-examples/expressions/">expression</a>',
+				typeOptions: {
+					loadOptionsDependsOn: ['authentication'],
+					loadOptionsMethod: 'getStores',
+				},
+			},
 			{
 				displayName: 'Resource',
 				name: 'resource',
@@ -138,11 +151,29 @@ export class BtcPay implements INodeType {
 		],
 	};
 
+	methods = {
+		loadOptions: {
+			async getStores(this: ILoadOptionsFunctions) {
+				const credentials = await this.getCredentials('btcPayApi');
+				try {
+					const responseData = await this.helpers.httpRequestWithAuthentication.call(this, 'btcPayApi', {
+						url: `${credentials.host}/api/v1/stores`,
+						method: 'GET',
+					});
+					return responseData.map((store: IDataObject) => ({ name: store.name, value: store.id }));
+				} catch (e) {
+					return [{ name: 'No Store', value: 'none' }];
+				}
+			},
+		},
+	};
+
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
 
 		const credentials = await this.getCredentials('btcPayApi');
+		const storeId = this.getNodeParameter('storeId', 0);
 		const resource = this.getNodeParameter('resource', 0);
 		const operation = this.getNodeParameter('operation', 0);
 
@@ -166,7 +197,7 @@ export class BtcPay implements INodeType {
 
 					try {
 						const responseData = await this.helpers.requestWithAuthentication.call(this, 'btcPayApi', {
-							url: `${credentials.host}/api/v1/stores/{storeId}/payment-requests`,
+							url: `${credentials.host}/api/v1/stores/${storeId}/payment-requests`,
 							method: 'POST',
 							body,
 						});
