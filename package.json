@@ -40,7 +40,7 @@
       "dist/credentials/HttpBinApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/ExampleNode/ExampleNode.node.js",
+      "dist/nodes/BtcPay/BtcPay.node.js",
       "dist/nodes/HttpBin/HttpBin.node.js"
     ]
   },

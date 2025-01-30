@@ -6,10 +6,10 @@ import type {
 } from 'n8n-workflow';
 import { NodeOperationError } from 'n8n-workflow';
 
-export class ExampleNode implements INodeType {
+export class BtcPay implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'BTCPay',
-		name: 'exampleNode',
+		name: 'btcPay',
 		icon: 'file:btcPay.svg',
 		group: ['transform'],
 		version: 1,
