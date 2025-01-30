@@ -21,6 +21,12 @@ export class BtcPay implements INodeType {
 		},
 		inputs: ['main'],
 		outputs: ['main'],
+		credentials: [
+			{
+				name: 'btcPayApi',
+				required: true,
+			},
+		],
 		properties: [
 			{
 				displayName: 'Resource',
@@ -136,6 +142,7 @@ export class BtcPay implements INodeType {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
 
+		const credentials = await this.getCredentials('btcPayApi');
 		const resource = this.getNodeParameter('resource', 0);
 		const operation = this.getNodeParameter('operation', 0);
 
@@ -158,12 +165,9 @@ export class BtcPay implements INodeType {
 					})
 
 					try {
-						const responseData = await this.helpers.request({
-							url: '{origin}/api/v1/stores/{storeId}/payment-requests',
+						const responseData = await this.helpers.requestWithAuthentication.call(this, 'btcPayApi', {
+							url: `${credentials.host}/api/v1/stores/{storeId}/payment-requests`,
 							method: 'POST',
-							headers: {
-								Authorization: 'token {accessToken}',
-							},
 							body,
 						});
 						returnData.push(JSON.parse(responseData));
