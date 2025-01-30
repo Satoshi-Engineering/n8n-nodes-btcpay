@@ -1,10 +1,12 @@
-import type {
-	IExecuteFunctions,
-	INodeExecutionData,
-	INodeType,
-	INodeTypeDescription,
+import {
+	JsonObject,
+	NodeApiError,
+	type IDataObject,
+	type IExecuteFunctions,
+	type INodeExecutionData,
+	type INodeType,
+	type INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeOperationError } from 'n8n-workflow';
 
 export class BtcPay implements INodeType {
 	description: INodeTypeDescription = {
@@ -107,12 +109,14 @@ export class BtcPay implements INodeType {
 								displayName: 'Field Name',
 								name: 'fieldName',
 								type: 'string',
+								required: true,
 								default: '',
 							},
 							{
 								displayName: 'Field Value',
 								name: 'fieldValue',
 								type: 'string',
+								required: true,
 								default: '',
 							},
 						],
@@ -128,45 +132,50 @@ export class BtcPay implements INodeType {
 		],
 	};
 
-	// The function below is responsible for actually doing whatever this node
-	// is supposed to do. In this case, we're just appending the `myString` property
-	// with whatever the user has entered.
-	// You can make async calls and use `await`.
 	async execute(this: IExecuteFunctions): Promise<INodeExecutionData[][]> {
 		const items = this.getInputData();
+		const returnData: IDataObject[] = [];
 
-		let item: INodeExecutionData;
-		let myString: string;
+		const resource = this.getNodeParameter('resource', 0);
+		const operation = this.getNodeParameter('operation', 0);
 
-		// Iterates over all input items and add the key "myString" with the
-		// value the parameter "myString" resolves to.
-		// (This could be a different value for each item in case it contains an expression)
-		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
-			try {
-				myString = this.getNodeParameter('myString', itemIndex, '') as string;
-				item = items[itemIndex];
+		if (resource === 'paymentRequest') {
+			if (operation === 'create') {
+				for (let i = 0; i < items.length; i++) {
+					const amount = this.getNodeParameter('amount', i) as number;
+					const title = this.getNodeParameter('title', i) as string;
+					const additionalFields = this.getNodeParameter('additionalFields.fieldValues', i) as Array<{
+						fieldName: string;
+						fieldValue: string;
+					}>;
 
-				item.json.myString = myString;
-			} catch (error) {
-				// This node should never fail but we want to showcase how
-				// to handle errors.
-				if (this.continueOnFail()) {
-					items.push({ json: this.getInputData(itemIndex)[0].json, error, pairedItem: itemIndex });
-				} else {
-					// Adding `itemIndex` allows other workflows to handle this error
-					if (error.context) {
-						// If the error thrown already contains the context property,
-						// only append the itemIndex
-						error.context.itemIndex = itemIndex;
-						throw error;
+					const body: IDataObject = {
+						amount,
+						title,
+					};
+					additionalFields.forEach(({ fieldName, fieldValue }) => {
+						body[fieldName] = fieldValue
+					})
+
+					try {
+						const responseData = await this.helpers.request({
+							url: '{origin}/api/v1/stores/{storeId}/payment-requests',
+							method: 'POST',
+							headers: {
+								Authorization: 'token {accessToken}',
+							},
+							body,
+						});
+						returnData.push(JSON.parse(responseData));
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({ error: error.toString() });
+						}
+						throw new NodeApiError(this.getNode(), error as JsonObject);
 					}
-					throw new NodeOperationError(this.getNode(), error, {
-						itemIndex,
-					});
 				}
 			}
 		}
-
-		return [items];
+		return [this.helpers.returnJsonArray(returnData)];
 	}
 }
