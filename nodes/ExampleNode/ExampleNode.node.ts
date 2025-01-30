@@ -4,20 +4,21 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow';
-import { NodeConnectionType, NodeOperationError } from 'n8n-workflow';
+import { NodeOperationError } from 'n8n-workflow';
 
 export class ExampleNode implements INodeType {
 	description: INodeTypeDescription = {
-		displayName: 'Example Node',
+		displayName: 'BTCPay',
 		name: 'exampleNode',
+		icon: 'file:btcPay.svg',
 		group: ['transform'],
 		version: 1,
-		description: 'Basic Example Node',
+		description: 'BtcPay node with some basic functionality. Will get extended in the future.',
 		defaults: {
-			name: 'Example Node',
+			name: 'BTCPay',
 		},
-		inputs: [NodeConnectionType.Main],
-		outputs: [NodeConnectionType.Main],
+		inputs: ['main'],
+		outputs: ['main'],
 		properties: [
 			// Node properties which the user gets displayed and
 			// can change on the node.
