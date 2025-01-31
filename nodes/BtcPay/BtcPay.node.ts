@@ -171,16 +171,18 @@ export class BtcPay implements INodeType {
 				for (let i = 0; i < items.length; i++) {
 					const amount = this.getNodeParameter('amount', i) as number;
 					const title = this.getNodeParameter('title', i) as string;
-					const additionalFields = this.getNodeParameter('additionalFields.fieldValues', i) as Array<{
-						fieldName: string;
-						fieldValue: string;
-					}>;
+					const additionalFields = this.getNodeParameter('additionalFields', i) as {
+						fieldValues?: Array<{
+							fieldName: string;
+							fieldValue: string;
+						}>
+					};
 
 					const body: IDataObject = {
 						amount,
 						title,
 					};
-					additionalFields.forEach(({ fieldName, fieldValue }) => {
+					(additionalFields.fieldValues ?? []).forEach(({ fieldName, fieldValue }) => {
 						body[fieldName] = fieldValue
 					})
 
