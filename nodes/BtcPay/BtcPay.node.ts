@@ -72,6 +72,12 @@ export class BtcPay implements INodeType {
 						description: 'Create a new payment request',
 						action: 'Create a new payment request',
 					},
+					{
+						name: 'Get',
+						value: 'get',
+						description: 'Get an existing payment request',
+						action: 'Get an existing payment request',
+					},
 				],
 				default: 'create',
 			},
@@ -148,6 +154,21 @@ export class BtcPay implements INodeType {
 						operation: ['create']
 					}
 				},
+			},
+			{
+				displayName: 'Payment ID',
+				name: 'paymentRequestId',
+				type: 'string',
+				required: true,
+				default: '',
+				placeholder: 'Payment request ID',
+				description: 'The ID of the payment request to fetch',
+				displayOptions: {
+					show: {
+						resource: ['paymentRequest'],
+						operation: ['get']
+					}
+				},
 			}
 		],
 	};
@@ -191,6 +212,24 @@ export class BtcPay implements INodeType {
 							url: `/api/v1/stores/${storeId}/payment-requests`,
 							method: 'POST',
 							body,
+						});
+						returnData.push(responseData);
+					} catch (error) {
+						if (this.continueOnFail()) {
+							returnData.push({ error: error.toString() });
+						}
+						throw new NodeApiError(this.getNode(), error as JsonObject);
+					}
+				}
+			}
+			if (operation === 'get') {
+				for (let i = 0; i < items.length; i++) {
+					const paymentRequestId = this.getNodeParameter('paymentRequestId', i) as string;
+
+					try {
+						const responseData = await apiRequest.call(this, {
+							url: `/api/v1/stores/${storeId}/payment-requests/${paymentRequestId}`,
+							method: 'GET',
 						});
 						returnData.push(responseData);
 					} catch (error) {
