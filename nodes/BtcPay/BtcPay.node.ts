@@ -1,5 +1,4 @@
 import {
-	ILoadOptionsFunctions,
 	JsonObject,
 	NodeApiError,
 	type IDataObject,
@@ -8,6 +7,8 @@ import {
 	type INodeType,
 	type INodeTypeDescription,
 } from 'n8n-workflow';
+
+import { apiRequest, getStores } from './GenericFunctions';
 
 export class BtcPay implements INodeType {
 	description: INodeTypeDescription = {
@@ -153,18 +154,7 @@ export class BtcPay implements INodeType {
 
 	methods = {
 		loadOptions: {
-			async getStores(this: ILoadOptionsFunctions) {
-				const credentials = await this.getCredentials('btcPayApi');
-				try {
-					const responseData = await this.helpers.httpRequestWithAuthentication.call(this, 'btcPayApi', {
-						url: `${credentials.host}/api/v1/stores`,
-						method: 'GET',
-					});
-					return responseData.map((store: IDataObject) => ({ name: store.name, value: store.id }));
-				} catch (e) {
-					return [{ name: 'No Store', value: 'none' }];
-				}
-			},
+			getStores,
 		},
 	};
 
@@ -172,7 +162,6 @@ export class BtcPay implements INodeType {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
 
-		const credentials = await this.getCredentials('btcPayApi');
 		const storeId = this.getNodeParameter('storeId', 0);
 		const resource = this.getNodeParameter('resource', 0);
 		const operation = this.getNodeParameter('operation', 0);
@@ -196,12 +185,12 @@ export class BtcPay implements INodeType {
 					})
 
 					try {
-						const responseData = await this.helpers.requestWithAuthentication.call(this, 'btcPayApi', {
-							url: `${credentials.host}/api/v1/stores/${storeId}/payment-requests`,
+						const responseData = await apiRequest.call(this, {
+							url: `/api/v1/stores/${storeId}/payment-requests`,
 							method: 'POST',
 							body,
 						});
-						returnData.push(JSON.parse(responseData));
+						returnData.push(responseData);
 					} catch (error) {
 						if (this.continueOnFail()) {
 							returnData.push({ error: error.toString() });

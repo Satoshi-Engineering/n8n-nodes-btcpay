@@ -39,7 +39,8 @@
       "dist/credentials/BtcPayApi.credentials.js"
     ],
     "nodes": [
-      "dist/nodes/BtcPay/BtcPay.node.js"
+      "dist/nodes/BtcPay/BtcPay.node.js",
+      "dist/nodes/BtcPay/BtcPayTrigger.node.js"
     ]
   },
   "devDependencies": {
@@ -53,5 +54,8 @@
   },
   "peerDependencies": {
     "n8n-workflow": "*"
+  },
+  "dependencies": {
+    "@octokit/webhooks": "^13.4.3"
   }
 }
