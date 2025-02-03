@@ -180,7 +180,7 @@ export class BtcPayTrigger implements INodeType {
             status: 200,
             message: 'Event discarded, only completed payment requests are accepted',
           },
-          workflowData: [],
+          workflowData: undefined,
         };
       }
 
@@ -194,7 +194,7 @@ export class BtcPayTrigger implements INodeType {
             status: 500,
             message: 'Webhook secret not found',
           },
-          workflowData: [],
+          workflowData: undefined,
         };
       }
 
@@ -209,7 +209,7 @@ export class BtcPayTrigger implements INodeType {
             status: 403,
             message: 'Invalid signature',
           },
-          workflowData: [],
+          workflowData: undefined,
         };
       }
 
@@ -228,7 +228,7 @@ export class BtcPayTrigger implements INodeType {
         status: 404,
         message: 'The selected event is not implemented yet',
       },
-      workflowData: [],
+      workflowData: undefined,
     };
 	}
 }
