@@ -1,9 +1,11 @@
-import type {
-	IHookFunctions,
-	IWebhookFunctions,
-	INodeType,
-	INodeTypeDescription,
-	IWebhookResponseData,
+import {
+	type IHookFunctions,
+	type IWebhookFunctions,
+	type INodeType,
+	type INodeTypeDescription,
+	type IWebhookResponseData,
+  NodeApiError,
+  JsonObject,
 } from 'n8n-workflow';
 
 import { apiRequest, getStores } from './GenericFunctions';
@@ -85,16 +87,19 @@ export class BtcPayTrigger implements INodeType {
 
         const storeId = this.getNodeParameter('storeId', 0) as string;
 
-        const responseData = await apiRequest.call(this, {
-          url: `/api/v1/stores/${storeId}/webhooks`,
-          method: 'GET',
-        });
-
-				for (const webhook of responseData) {
-					if (webhook.url === webhookUrl) {
-						return true;
-					}
-				}
+        try {
+          const responseData = await apiRequest.call(this, {
+            url: `/api/v1/stores/${storeId}/webhooks`,
+            method: 'GET',
+          });
+          for (const webhook of responseData) {
+            if (webhook.url === webhookUrl) {
+              return true;
+            }
+          }
+        } catch (error) {
+          throw new NodeApiError(this.getNode(), error as JsonObject);
+        }
 
 				return false;
 			},
@@ -105,25 +110,35 @@ export class BtcPayTrigger implements INodeType {
 
         const storeId = this.getNodeParameter('storeId', 0) as string;
         const authorizedEvent = this.getNodeParameter('authorizedEvent', 0) as string;
-        const authorizedEvents: string[] = [];
+        const authorizedEvents: {
+          everything: boolean,
+          specificEvents: string[],
+        } = {
+          everything: false,
+          specificEvents: [],
+        };
         if (authorizedEvent === 'paymentRequestCompleted') {
-          authorizedEvents.push('PaymentRequestStatusChanged');
+          authorizedEvents.specificEvents.push('PaymentRequestStatusChanged');
         }
 
-        const responseData = await apiRequest.call(this, {
-          url: `/api/v1/stores/${storeId}/webhooks`,
-          method: 'POST',
-          body: {
-            enabled: true,
-            automaticRedelivery: true,
-            url: webhookUrl,
-            authorizedEvents,
-          }
-        });
+        try {
+          const responseData = await apiRequest.call(this, {
+            url: `/api/v1/stores/${storeId}/webhooks`,
+            method: 'POST',
+            body: {
+              enabled: true,
+              automaticRedelivery: true,
+              url: webhookUrl,
+              authorizedEvents,
+            }
+          });
 
-				const webhookData = this.getWorkflowStaticData('node');
-        webhookData.webhookId = responseData.id;
-        webhookData.webhookSecret = responseData.secret;
+          const webhookData = this.getWorkflowStaticData('node');
+          webhookData.webhookId = responseData.id;
+          webhookData.webhookSecret = responseData.secret;
+        } catch (error) {
+          throw new NodeApiError(this.getNode(), error as JsonObject);
+        }
 
 				return true;
 			},
@@ -132,16 +147,20 @@ export class BtcPayTrigger implements INodeType {
 			async delete(this: IHookFunctions): Promise<boolean> {
         const storeId = this.getNodeParameter('storeId', 0) as string;
 
-				const webhookData = this.getWorkflowStaticData('node');
-        if (webhookData.webhookId == null) {
-          return true
+        try {
+          const webhookData = this.getWorkflowStaticData('node');
+          if (webhookData.webhookId == null) {
+            return true
+          }
+          await apiRequest.call(this, {
+            url: `/api/v1/stores/${storeId}/webhooks/${webhookData.webhookId}`,
+            method: 'DELETE',
+          });
+          delete webhookData.webhookId;
+          delete webhookData.webhookSecret;
+        } catch (error) {
+          throw new NodeApiError(this.getNode(), error as JsonObject);
         }
-        await apiRequest.call(this, {
-          url: `/api/v1/stores/${storeId}/webhooks/${webhookData.webhookId}`,
-          method: 'DELETE',
-        });
-        delete webhookData.webhookId;
-        delete webhookData.webhookSecret;
 
 				return true;
 			},
