@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import {
 	type IHookFunctions,
 	type IWebhookFunctions,
@@ -6,6 +7,7 @@ import {
 	type IWebhookResponseData,
   NodeApiError,
   JsonObject,
+  BINARY_ENCODING,
 } from 'n8n-workflow';
 
 import { apiRequest, getStores } from './GenericFunctions';
@@ -185,9 +187,16 @@ export class BtcPayTrigger implements INodeType {
       }
 
       // validate signature
+      const request = this.getRequestObject();
       const webhookData = this.getWorkflowStaticData('node');
-      const signature = this.getHeaderData()['btcpay-sig'].split('=')[1];
-      const body = this.getRequestObject().body
+      const headerData = this.getHeaderData();
+      const btcPaySig = headerData['btcpay-sig'] as string;
+      const signature = btcPaySig.split('=')[1];
+      if (!request.rawBody) {
+        await request.readRawBody();
+      }
+      const data = (request.rawBody ?? '').toString(BINARY_ENCODING)
+      const bodyInUtf8 = Buffer.from(data, 'base64').toString('utf8')
       if (typeof webhookData.webhookSecret !== 'string') {
         return {
           webhookResponse: {
@@ -197,13 +206,8 @@ export class BtcPayTrigger implements INodeType {
           workflowData: undefined,
         };
       }
-
-      const Webhooks = await import('@octokit/webhooks');
-      const webhooks = new Webhooks.Webhooks({
-        secret: webhookData.webhookSecret,
-      });
-      const valid = await webhooks.verify(body, signature)
-      if (!valid) {
+      const expectedSignature = crypto.createHmac('sha256', webhookData.webhookSecret).update(bodyInUtf8).digest('hex')
+      if (signature != expectedSignature) {
         return {
           webhookResponse: {
             status: 403,
