@@ -11,6 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         name: Checkout
+      # Necessary step top pnpm run publish due Bug: https://github.com/pnpm/pnpm/issues/9011
+      - name: Ensure correct branch is checked out
+        run: |
+          git checkout $(git rev-parse --abbrev-ref HEAD)        
       - uses: pnpm/action-setup@v4      
         name: Install pnpm with the version of packageManager in package.json
       # Setup .npmrc file to publish to npm
