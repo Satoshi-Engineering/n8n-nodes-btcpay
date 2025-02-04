@@ -29,6 +29,7 @@
     "format": "prettier nodes credentials --write",
     "lint": "eslint nodes credentials package.json",
     "lintfix": "eslint nodes credentials package.json --fix",
+    "test": "jest",
     "prepublishOnly": "pnpm build && pnpm lint -c .eslintrc.prepublish.js nodes credentials package.json",
     "bump-version": "npm run lint && npx changelogen@latest --release && git push --follow-tags",
     "publish": "pnpm publish --access public"
@@ -47,19 +48,26 @@
     ]
   },
   "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.0",
     "@typescript-eslint/parser": "^7.15.0",
     "eslint": "^8.56.0",
     "eslint-plugin-n8n-nodes-base": "^1.16.1",
+    "express": "^4.21.2",
+    "get-tsconfig": "^4.10.0",
     "gulp": "^4.0.2",
-    "n8n-workflow": "*",
+    "jest": "^29.7.0",
+    "jest-expect-message": "^1.1.3",
+    "jest-mock-extended": "4.0.0-beta1",
     "prettier": "^3.3.2",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.5.3"
   },
   "peerDependencies": {
     "n8n-workflow": "*"
   },
   "dependencies": {
-    "@octokit/webhooks": "^13.4.3",
-    "@types/node": "^22.13.0"
+    "n8n-workflow": "*"
   }
 }

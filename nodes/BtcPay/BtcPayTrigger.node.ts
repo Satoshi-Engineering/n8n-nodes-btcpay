@@ -54,13 +54,13 @@ export class BtcPayTrigger implements INodeType {
 			},
 			{
 				displayName: 'Event',
-				name: 'authorizedEvent',
+				name: 'eventName',
 				type: 'options',
 				default: 'paymentRequestCompleted',
 				required: true,
 				description: 'What type of event should trigger the workflow?',
         options: [{
-          name: 'Payment Request Fulfilled',
+          name: 'Payment Request Completed',
           value: 'paymentRequestCompleted',
         }]
 			},
@@ -111,7 +111,7 @@ export class BtcPayTrigger implements INodeType {
 				const webhookUrl = this.getNodeWebhookUrl('default');
 
         const storeId = this.getNodeParameter('storeId', 0) as string;
-        const authorizedEvent = this.getNodeParameter('authorizedEvent', 0) as string;
+        const selectedEvent = this.getNodeParameter('eventName', 0) as string;
         const authorizedEvents: {
           everything: boolean,
           specificEvents: string[],
@@ -119,7 +119,7 @@ export class BtcPayTrigger implements INodeType {
           everything: false,
           specificEvents: [],
         };
-        if (authorizedEvent === 'paymentRequestCompleted') {
+        if (selectedEvent === 'paymentRequestCompleted') {
           authorizedEvents.specificEvents.push('PaymentRequestStatusChanged');
         }
 
@@ -172,11 +172,11 @@ export class BtcPayTrigger implements INodeType {
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
 		const bodyData = this.getBodyData();
 
-    const authorizedEvent = this.getNodeParameter('authorizedEvent', 0) as string;
+    const selectedEvent = this.getNodeParameter('eventName', 0) as string;
 
-    if (authorizedEvent === 'paymentRequestCompleted') {
+    if (selectedEvent === 'paymentRequestCompleted') {
       // only handle completed payment requests
-      if (bodyData.status !== 'Completed') {
+      if (bodyData.type !== 'PaymentRequestStatusChanged' || bodyData.status !== 'Completed') {
         return {
           webhookResponse: {
             status: 200,
