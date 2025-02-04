@@ -10,8 +10,12 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        name: Checkout
+      - uses: pnpm/action-setup@v4      
+        name: Install pnpm with the version of packageManager in package.json
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v4
+        name: Install NodeJs
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
@@ -19,3 +23,4 @@ jobs:
       - run: pnpm run publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          
