@@ -1,46 +1,109 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-btcpay
 
-# n8n-nodes-starter
+This is an n8n community node. It lets you use [BTCPay](https://btcpayserver.org/) in your n8n workflows.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](n8n.io). It includes the node linter and other dependencies.
+BTCPay Server is a self-hosted, open-source bitcoin payment processor. It's secure, private, censorship-resistant and free.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-## Prerequisites
+[Installation](#installation)  
+[Operations](#operations)  
+[Credentials](#credentials)
+[Compatibility](#compatibility)  
+[Resources](#resources)  
 
-You need the following installed on your development machine:
+## Installation
 
-* [git](https://git-scm.com/downloads)
-* Node.js and pnpm. Minimum version Node 18. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  pnpm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-## Using this starter
+## Operations
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+### Payment Requests
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `pnpm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `pnpm lint` to check for errors or `pnpm lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+With this node, you can:
 
-## More information
+* **Create** new payment requests.
+* **Check** the status of an existing payment request.
+* **Trigger workflows** when a payment request is completed (i.e., when an invoice created by the request is settled).
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+## Credentials
 
-## License
+To use this node, you need to generate API keys in your [BTCPay Account](https://mainnet.demo.btcpayserver.org/account/apikeys).
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+### Steps to Generate API Keys
+
+1. Navigate to `/account/apikeys`.
+2. Click **Generate Keys** and enter a label of your choice.
+3. Assign the necessary permissions based on your use case:
+
+    * **View stores** (`btcpay.store.canviewstoresettings`) → Required for all nodes.
+    * **Modify store webhooks** (`btcpay.store.webhooks.canmodifywebhooks`) → Required for the trigger node.
+    * **View payment requests** (`btcpay.store.canviewpaymentrequests`) → Needed for the get operation.
+    * **Modify payment requests** (`btcpay.store.canmodifypaymentrequests`) → Needed for the create operation.
+
+### Adding Credentials to n8n
+
+1. Once your API key is generated, locate it in the table and click **Reveal** under the `Key` column.
+2. Copy the API key and go to your n8n instance.
+3. Navigate to `/home/credentials` and create new credentials for BTCPay.
+4. Select BTCPay API, then:
+
+    * Paste the API key in the **API Token** field.
+    * Enter the host URL of your BTCPay server (including protocol and port).
+
+## Compatibility
+
+* Developed with **n8n version 1.51.0** and **BTCPay Server version 2.0.6**.
+* Older versions may work but are not tested.
+
+## Resources
+
+* [n8n community nodes documentation](https://docs.n8n.io/integrations/community-nodes/)
+* [BTCPay API docs](https://docs.btcpayserver.org/API/Greenfield/v1/)
+
+## Contribute
+
+For local development follow [this guide](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/) for setup.
+
+Or use the following summary below:
+
+Want to contribute? Follow the [official guide](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/) to set up your local development environment.
+
+Alternatively, you can follow this quick setup guide:
+
+```sh
+# Install n8n globally
+pnpm install n8n -g
+
+# Clone the project and set up dependencies
+cd ~/your/projects
+git clone https://github.com/Satoshi-Engineering/n8n-nodes-btcpay
+cd n8n-nodes-btcpay
+pnpm i
+pnpm build
+pnpm link --global
+
+# Start n8n to ensure the nodes directory is available
+n8n start
+
+# (Optional) If ~/.n8n/nodes is not available, open n8n in the browser and install any community module
+
+# Link the custom node to n8n
+cd ~/.n8n/nodes
+pnpm link --global n8n-nodes-btcpay
+
+# After making changes to the source code, rebuild and restart n8n
+cd ~/your/projects/n8n-nodes-btcpay
+pnpm build
+n8n start
+```
+
+### Testing
+
+All new nodes and operations should include full unit tests to ensure reliability.
+
+Your contributions are greatly appreciated! 🚀
+
+## Tip us
+
+If you find this project useful and would like to support its development, why not [send some tip love?](https://satoshiengineering.com/tipjar/)
