@@ -8,6 +8,7 @@ import {
   NodeApiError,
   JsonObject,
   BINARY_ENCODING,
+  NodeOperationError,
 } from 'n8n-workflow';
 
 import { apiRequest, getStores } from './GenericFunctions';
@@ -121,6 +122,8 @@ export class BtcPayTrigger implements INodeType {
         };
         if (selectedEvent === 'paymentRequestCompleted') {
           authorizedEvents.specificEvents.push('PaymentRequestStatusChanged');
+        } else {
+          throw new NodeOperationError(this.getNode(), 'The selected event is not implemented yet');
         }
 
         try {
