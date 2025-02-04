@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.5
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.4...v0.1.5)
+
+### 🩹 Fixes
+
+- **pipeline:** Disable git-checks false due bug in pnpm run publish ([3210195](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/3210195))
+
+### ❤️ Contributors
+
+- Thespielplatz <informatics@gmx.net>
+
 ## v0.1.4
 
 [compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.3...v0.1.4)
