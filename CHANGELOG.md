@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.1.6
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.5...v0.1.6)
+
+### 🩹 Fixes
+
+- **pipeline:** Remove script publish due double call in the github action and move parameters to pipeline script ([10494b5](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/10494b5))
+
+### ✅ Tests
+
+- Add more tests for BtcPayTrigger node ([0e26880](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/0e26880))
+
+### ❤️ Contributors
+
+- Thespielplatz <informatics@gmx.net>
+- Thomas Schagerl <tom@satoshiengineering.com>
+
 ## v0.1.5
 
 [compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.4...v0.1.5)
