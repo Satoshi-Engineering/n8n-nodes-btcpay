@@ -1,6 +1,7 @@
 import {
 	JsonObject,
 	NodeApiError,
+	NodeOperationError,
 	type IDataObject,
 	type IExecuteFunctions,
 	type INodeExecutionData,
@@ -221,8 +222,7 @@ export class BtcPay implements INodeType {
 						throw new NodeApiError(this.getNode(), error as JsonObject);
 					}
 				}
-			}
-			if (operation === 'get') {
+			} else if (operation === 'get') {
 				for (let i = 0; i < items.length; i++) {
 					const paymentRequestId = this.getNodeParameter('paymentRequestId', i) as string;
 
@@ -239,8 +239,13 @@ export class BtcPay implements INodeType {
 						throw new NodeApiError(this.getNode(), error as JsonObject);
 					}
 				}
+			} else {
+				throw new NodeOperationError(this.getNode(), `The operation "${operation}" is not supported for payment requests!`);
 			}
+		} else {
+			throw new NodeOperationError(this.getNode(), `The resource "${resource}" is not supported!`);
 		}
+
 		return [this.helpers.returnJsonArray(returnData)];
 	}
 }
