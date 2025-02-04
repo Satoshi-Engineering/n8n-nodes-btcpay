@@ -9,9 +9,10 @@ export async function apiRequest(
   options: IHttpRequestOptions,
 ) {
   const credentials = await this.getCredentials('btcPayApi');
+  const host = new URL(credentials.host);
   const responseData = await this.helpers.httpRequestWithAuthentication.call(this, 'btcPayApi', {
     ...options,
-    url: `${credentials.host}${options.url}`,
+    url: `${host.origin}${options.url}`,
   });
   return responseData;
 }
