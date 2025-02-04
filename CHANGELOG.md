@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.4
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.3...v0.1.4)
+
+### 🩹 Fixes
+
+- **pipeline:** Add git checkout step due bug in pnpm run publish ([5c571f7](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/5c571f7))
+
+### ❤️ Contributors
+
+- Thespielplatz <informatics@gmx.net>
+
 ## v0.1.3
 
 [compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.2...v0.1.3)
