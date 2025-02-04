@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.3
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.2...v0.1.3)
+
+### 🩹 Fixes
+
+- **pipeline:** Use pnpm i i/o pnpm ci (The ci command is not implemented yet) ([2f91ccb](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/2f91ccb))
+- **pipeline:** Use pnpm i/o npm in bump version script ([7f50b3f](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/7f50b3f))
+
+### ❤️ Contributors
+
+- Thespielplatz <informatics@gmx.net>
+
 ## v0.1.2
 
 
