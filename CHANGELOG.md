@@ -1,6 +1,29 @@
 # Changelog
 
 
+## v0.1.7
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.6...v0.1.7)
+
+### 🩹 Fixes
+
+- ApiRequest helper function handle trailing slash in credentials host ([46f548b](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/46f548b))
+
+### 📖 Documentation
+
+- **release:** Add release guide ([dcf4ef3](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/dcf4ef3))
+- Readme ([a387f3a](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/a387f3a))
+
+### ✅ Tests
+
+- Add more tests for BtcPayTrigger node ([19d40a8](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/19d40a8))
+- Add tests for BtcPay action node ([d2bd074](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/d2bd074))
+
+### ❤️ Contributors
+
+- Thomas Schagerl <tom@satoshiengineering.com>
+- Thespielplatz <informatics@gmx.net>
+
 ## v0.1.6
 
 [compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.5...v0.1.6)
