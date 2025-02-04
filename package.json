@@ -31,8 +31,7 @@
     "lintfix": "eslint nodes credentials package.json --fix",
     "test": "jest",
     "prepublishOnly": "pnpm build && pnpm lint -c .eslintrc.prepublish.js nodes credentials package.json",
-    "bump-version": "pnpm run lint && npx changelogen@latest --release && git push --follow-tags",
-    "publish": "pnpm publish --access public"
+    "bump-version": "pnpm run lint && npx changelogen@latest --release && git push --follow-tags"
   },
   "files": [
     "dist"
