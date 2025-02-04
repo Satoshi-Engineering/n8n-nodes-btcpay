@@ -14,7 +14,7 @@ BTCPay Server is a self-hosted, open-source bitcoin payment processor. It's secu
 
 ## Installation
 
-Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation. The package name is `@satoshiengineering/n8n-nodes-btcpay`.
 
 ## Operations
 
