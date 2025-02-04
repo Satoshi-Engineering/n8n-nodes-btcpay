@@ -1,0 +1,45 @@
+# Changelog
+
+
+## v0.1.1
+
+
+### 🚀 Enhancements
+
+- Add btc displayname and logo to example node ([97c31b5](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/97c31b5))
+- Add first properties to btcpay node ([33f6bcb](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/33f6bcb))
+- Add title and additional fields to btcpay node ([2d5e44d](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/2d5e44d))
+- Implement payment request creation ([b8fc1fd](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/b8fc1fd))
+- Add credentials for btcpay server apitoken ([8e9c001](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/8e9c001))
+- Add storeId selection to btcpay node ([ce8d4c8](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/ce8d4c8))
+- Add BtcPayTrigger node, still work in progress ([47b6a1b](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/47b6a1b))
+- Add get payment request operation ([d93ec9f](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/d93ec9f))
+
+### 🩹 Fixes
+
+- Allow zero additional fields ([79e1529](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/79e1529))
+- Btcpay trigger creation ([279d5e4](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/279d5e4))
+- Btcpay webhook trigger send undefined as data to stop execution i/o empty array ([c153807](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/c153807))
+- Btcpay trigger node handle signature check ([d6e7be1](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/d6e7be1))
+
+### 💅 Refactors
+
+- Rename example node to btcpay node ([e1a1b31](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/e1a1b31))
+
+### 🏡 Chore
+
+- Add basic project info to package.json ([acac1e6](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/acac1e6))
+- Change name in package.json to npm package name ([b6634af](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/b6634af))
+- Publish tasks ([e115884](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/e115884))
+
+### 🤖 CI
+
+- Add bump version script ([f98c3eb](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/f98c3eb))
+- Add github pipeline that publishes a new github release to npm ([6702402](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/6702402))
+
+### ❤️ Contributors
+
+- Thespielplatz <informatics@gmx.net>
+- Thomas Schagerl <tom@satoshiengineering.com>
+- Dr-erych <dave@satoshiengineering.com>
+
