@@ -192,7 +192,7 @@ export class BtcPay implements INodeType {
 				if (this.continueOnFail()) {
 					returnData.push({ error: error.toString() });
 				} else {
-					throw new NodeApiError(this.getNode(), error as JsonObject);
+					throw error;
 				}
 			}
 		}
@@ -237,21 +237,29 @@ async function createPaymentRequest(context: IExecuteFunctions, itemIndex: numbe
 		body[fieldName] = fieldValue
 	})
 
-	const responseData = await apiRequest.call(context, {
-		url: `/api/v1/stores/${storeId}/payment-requests`,
-		method: 'POST',
-		body,
-	});
-	return responseData;
+	try {
+		const responseData = await apiRequest.call(context, {
+			url: `/api/v1/stores/${storeId}/payment-requests`,
+			method: 'POST',
+			body,
+		});
+		return responseData;
+	} catch (error) {
+		throw new NodeApiError(context.getNode(), error as JsonObject);
+	}
 }
 
 async function getPaymentRequest(context: IExecuteFunctions, itemIndex: number) {
 	const storeId = context.getNodeParameter('storeId', 0) as string;
 	const paymentRequestId = context.getNodeParameter('paymentRequestId', itemIndex) as string;
 
-	const responseData = await apiRequest.call(context, {
-		url: `/api/v1/stores/${storeId}/payment-requests/${paymentRequestId}`,
-		method: 'GET',
-	});
-	return responseData;
+	try {
+		const responseData = await apiRequest.call(context, {
+			url: `/api/v1/stores/${storeId}/payment-requests/${paymentRequestId}`,
+			method: 'GET',
+		});
+		return responseData;
+	} catch (error) {
+		throw new NodeApiError(context.getNode(), error as JsonObject);
+	}
 }

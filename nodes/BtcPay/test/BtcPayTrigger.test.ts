@@ -246,6 +246,9 @@ describe('Test BtcPayTrigger Node', () => {
 		it('should stop if the status is not "Completed"', async () => {
       context.getBodyData.mockReturnValue(bodyDataPending)
       req.rawBody = Buffer.from(JSON.stringify(bodyDataPending, undefined, 2), 'utf8');
+			context.getHeaderData.mockReturnValue({
+				'btcpay-sig': 'sha256=7beb644d0a6b3b92adfab1e9dae56c9a9a2f22aecb1bcca2d004996344368306',
+			});
 			const node = new BtcPayTrigger();
 
 			const returnData = await node.webhook.call(context);
@@ -254,15 +257,12 @@ describe('Test BtcPayTrigger Node', () => {
 			expect(returnData.workflowData).toBeUndefined();
 		});
 
-		it('should return 403 with an invalid signature', async () => {
+		it('should throw an error with an invalid signature', async () => {
       context.getBodyData.mockReturnValue(bodyDataCompleted)
       req.rawBody = Buffer.from(JSON.stringify(bodyDataCompleted, undefined, 2), 'utf8');
 			const node = new BtcPayTrigger();
 
-			const returnData = await node.webhook.call(context);
-
-			expect(returnData.webhookResponse.status).toBe(403);
-			expect(returnData.workflowData).toBeUndefined();
+			await expect(() => node.webhook.call(context)).rejects.toThrow(NodeApiError);
 		});
 
 		it('should return the body data', async () => {

@@ -190,69 +190,84 @@ export class BtcPayTrigger implements INodeType {
 	};
 
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
-		const bodyData = this.getBodyData();
+    await validateSignature(this);
+    return handleEvent(this);
+	}
+}
 
-    const selectedEvent = this.getNodeParameter('eventName', 0) as string;
+async function validateSignature(context: IWebhookFunctions): Promise<void> {
+  const signature = getSignatureFromHeader(context);
+  const expectedSignature = await signBody(context);
+  if (signature != expectedSignature) {
+    throw new NodeApiError(context.getNode(), {}, {
+      message: 'Invalid signature',
+      httpCode: '403',
+    });
+  }
+}
 
-    if (selectedEvent === 'paymentRequestCompleted') {
-      // only handle completed payment requests
-      if (bodyData.type !== 'PaymentRequestStatusChanged' || bodyData.status !== 'Completed') {
-        return {
-          webhookResponse: {
-            status: 200,
-            message: 'Event discarded, only completed payment requests are accepted',
-          },
-          workflowData: undefined,
-        };
-      }
+function getSignatureFromHeader(context: IWebhookFunctions): string {
+  const headerData = context.getHeaderData();
+  const btcPaySig = headerData['btcpay-sig'] as string;
+  return btcPaySig.split('=')[1];
+}
 
-      // validate signature
-      const request = this.getRequestObject();
-      const webhookData = this.getWorkflowStaticData('node');
-      const headerData = this.getHeaderData();
-      const btcPaySig = headerData['btcpay-sig'] as string;
-      const signature = btcPaySig.split('=')[1];
-      if (!request.rawBody) {
-        await request.readRawBody();
-      }
-      const data = (request.rawBody ?? '').toString(BINARY_ENCODING)
-      const bodyInUtf8 = Buffer.from(data, 'base64').toString('utf8')
-      if (typeof webhookData.webhookSecret !== 'string') {
-        return {
-          webhookResponse: {
-            status: 500,
-            message: 'Webhook secret not found',
-          },
-          workflowData: undefined,
-        };
-      }
-      const expectedSignature = crypto.createHmac('sha256', webhookData.webhookSecret).update(bodyInUtf8).digest('hex')
-      if (signature != expectedSignature) {
-        return {
-          webhookResponse: {
-            status: 403,
-            message: 'Invalid signature',
-          },
-          workflowData: undefined,
-        };
-      }
+async function signBody(context: IWebhookFunctions): Promise<string> {
+  const secret = getSecret(context);
+  const body = await getRawBody(context);
+  return crypto
+    .createHmac('sha256', secret)
+    .update(body)
+    .digest('hex');
+}
 
-      // execute next node
-      return {
-        webhookResponse: {
-          status: 200,
-          message: 'The selected event is not implemented yet',
-        },
-        workflowData: [this.helpers.returnJsonArray([bodyData])],
-      };
-    }
+function getSecret(context: IWebhookFunctions): string {
+  const webhookData = context.getWorkflowStaticData('node');
+  if (typeof webhookData.webhookSecret !== 'string') {
+    throw new NodeOperationError(context.getNode(), 'Webhook secret not found');
+  }
+  return webhookData.webhookSecret;
+}
 
+async function getRawBody(context: IWebhookFunctions): Promise<string> {
+  const request = context.getRequestObject();
+  if (!request.rawBody) {
+    await request.readRawBody();
+  }
+  const data = (request.rawBody ?? '').toString(BINARY_ENCODING)
+  return Buffer.from(data, 'base64').toString('utf8')
+}
+
+function handleEvent(context: IWebhookFunctions): IWebhookResponseData {
+  const selectedEvent = context.getNodeParameter('eventName', 0) as string;
+  if (selectedEvent === 'paymentRequestCompleted') {
+    return onPaymentRequestCompleted(context)
+  }
+  throw new NodeOperationError(context.getNode(), `The selected event "${selectedEvent}" is not supported!`);
+}
+
+function onPaymentRequestCompleted(context: IWebhookFunctions): IWebhookResponseData {
+  const bodyData = context.getBodyData();
+
+  // only handle completed payment requests
+  if (
+    bodyData.type !== 'PaymentRequestStatusChanged'
+    || bodyData.status !== 'Completed'
+  ) {
     return {
       webhookResponse: {
-        status: 404,
-        message: 'The selected event is not implemented yet',
+        status: 200,
+        message: 'Event discarded, only completed payment requests are accepted',
       },
       workflowData: undefined,
     };
-	}
+  }
+
+  return {
+    webhookResponse: {
+      status: 200,
+      message: 'The selected event is not implemented yet',
+    },
+    workflowData: [context.helpers.returnJsonArray([bodyData])],
+  };
 }
