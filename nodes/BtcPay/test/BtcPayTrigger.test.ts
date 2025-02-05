@@ -211,7 +211,7 @@ describe('Test BtcPayTrigger Node', () => {
 	});
 
 	describe('handle paymentRequestCompleted webhook', () => {
-    const bodyDataPending = {
+    const testBodyDataPending = {
       deliveryId: 'XhWq8Yt3CwGbxBSRNuQFeN',
       webhookId: 'RPmHuKhkKqmZVX854QqHHr',
       originalDeliveryId: '__test__a6f47008-c8e7-4965-9173-532fb3d5d04b__test__',
@@ -220,6 +220,17 @@ describe('Test BtcPayTrigger Node', () => {
       timestamp: 1738660312,
       storeId: '9BatxYQgpxRKXfkZxoWCa324sbkcVmfJVjQixBCP7NYm',
       paymentRequestId: '__test__bc786aa8-8f1c-40ee-a80d-2cfd69f4d128__test__',
+      status: 'Pending',
+    };
+    const bodyDataPending = {
+      deliveryId: 'XhWq8Yt3CwGbxBSRNuQFeN',
+      webhookId: 'RPmHuKhkKqmZVX854QqHHr',
+      originalDeliveryId: 'a6f47008-c8e7-4965-9173-532fb3d5d04b',
+      isRedelivery: false,
+      type: 'PaymentRequestStatusChanged',
+      timestamp: 1738660312,
+      storeId: '9BatxYQgpxRKXfkZxoWCa324sbkcVmfJVjQixBCP7NYm',
+      paymentRequestId: 'bc786aa8-8f1c-40ee-a80d-2cfd69f4d128',
       status: 'Pending',
     };
 		const bodyDataCompleted = {
@@ -243,11 +254,25 @@ describe('Test BtcPayTrigger Node', () => {
 			'btcpay-sig': 'sha256=52aa466f504e546c10fd07f906ab6b4a710d2df496e8f14c5e217ccd473e813b',
 		});
 
-		it('should stop if the status is not "Completed"', async () => {
+		it('should continue for test data, if the status is not "Completed"', async () => {
+      context.getBodyData.mockReturnValue(testBodyDataPending)
+      req.rawBody = Buffer.from(JSON.stringify(testBodyDataPending, undefined, 2), 'utf8');
+			context.getHeaderData.mockReturnValue({
+				'btcpay-sig': 'sha256=7beb644d0a6b3b92adfab1e9dae56c9a9a2f22aecb1bcca2d004996344368306',
+			});
+			const node = new BtcPayTrigger();
+
+			const returnData = await node.webhook.call(context);
+
+			expect(returnData.webhookResponse.status).toBe(200);
+			expect(returnData.workflowData).toEqual([[testBodyDataPending]]);
+		});
+
+		it('should stop for live data, if the status is not "Completed"', async () => {
       context.getBodyData.mockReturnValue(bodyDataPending)
       req.rawBody = Buffer.from(JSON.stringify(bodyDataPending, undefined, 2), 'utf8');
 			context.getHeaderData.mockReturnValue({
-				'btcpay-sig': 'sha256=7beb644d0a6b3b92adfab1e9dae56c9a9a2f22aecb1bcca2d004996344368306',
+				'btcpay-sig': 'sha256=f1159fec7fe78f083d89fa74e365ebd9f608c312ba8be1e2aa898ef1d6d463b5',
 			});
 			const node = new BtcPayTrigger();
 
@@ -269,7 +294,7 @@ describe('Test BtcPayTrigger Node', () => {
       context.getBodyData.mockReturnValue(bodyDataCompleted)
       req.rawBody = Buffer.from(JSON.stringify(bodyDataCompleted, undefined, 2), 'utf8');
 			context.getHeaderData.mockReturnValue({
-				'btcpay-sig': 'sha256=520e50c33de020dbe5c55e58899ad2db29caf6faa72131686d342ffc02e8b891',
+				'btcpay-sig': 'sha256=ae644da14f3feffd05a6ce017141ccb86842e3f962b6b4f9f0207b096274ebb6',
 			});
 			const node = new BtcPayTrigger();
 

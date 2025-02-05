@@ -72,7 +72,7 @@ export class BtcPayTrigger implements INodeType {
         }]
 			},
       {
-        displayName: 'You can test this webhook in BTCpay Server by triggering the "Payment Request Status Changed" event. However, the status will always be "Pending," meaning the trigger won\'t proceed unless a real payment request is fully completed. The output will include the "paymentRequestId" along with other details. For more information, refer to the BTCpay Server API documentation.',
+        displayName: 'You can test this webhook in BTCpay Server by triggering the "Payment Request Status Changed" event. However, the status will always be "Pending". The output will include the "paymentRequestId" along with other details. For more information, refer to the BTCpay Server API documentation.',
         name: 'webhookTesting',
         type: 'notice',
         default: '',
@@ -248,11 +248,14 @@ function handleEvent(context: IWebhookFunctions): IWebhookResponseData {
 
 function onPaymentRequestCompleted(context: IWebhookFunctions): IWebhookResponseData {
   const bodyData = context.getBodyData();
+  const type = bodyData.type as string;
+  const paymentRequestId = bodyData.paymentRequestId as string;
+  const status = bodyData.status as string;
 
-  // only handle completed payment requests
+  // only handle completed payment requests (or test calls)
   if (
-    bodyData.type !== 'PaymentRequestStatusChanged'
-    || bodyData.status !== 'Completed'
+    type !== 'PaymentRequestStatusChanged'
+    || (!paymentRequestId.includes('__test__') && status !== 'Completed')
   ) {
     return {
       webhookResponse: {
