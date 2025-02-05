@@ -184,68 +184,74 @@ export class BtcPay implements INodeType {
 		const items = this.getInputData();
 		const returnData: IDataObject[] = [];
 
-		const storeId = this.getNodeParameter('storeId', 0);
-		const resource = this.getNodeParameter('resource', 0);
-		const operation = this.getNodeParameter('operation', 0);
-
-		if (resource === 'paymentRequest') {
-			if (operation === 'create') {
-				for (let i = 0; i < items.length; i++) {
-					const amount = this.getNodeParameter('amount', i) as number;
-					const title = this.getNodeParameter('title', i) as string;
-					const additionalFields = this.getNodeParameter('additionalFields', i) as {
-						fieldValues?: Array<{
-							fieldName: string;
-							fieldValue: string;
-						}>
-					};
-
-					const body: IDataObject = {
-						amount,
-						title,
-					};
-					(additionalFields.fieldValues ?? []).forEach(({ fieldName, fieldValue }) => {
-						body[fieldName] = fieldValue
-					})
-
-					try {
-						const responseData = await apiRequest.call(this, {
-							url: `/api/v1/stores/${storeId}/payment-requests`,
-							method: 'POST',
-							body,
-						});
-						returnData.push(responseData);
-					} catch (error) {
-						if (this.continueOnFail()) {
-							returnData.push({ error: error.toString() });
-						}
-						throw new NodeApiError(this.getNode(), error as JsonObject);
-					}
+		for (let itemIndex = 0; itemIndex < items.length; itemIndex++) {
+			try {
+				const responseData = await executeForItem(this, itemIndex);
+				returnData.push(responseData);
+			} catch (error) {
+				if (this.continueOnFail()) {
+					returnData.push({ error: error.toString() });
+				} else {
+					throw new NodeApiError(this.getNode(), error as JsonObject);
 				}
-			} else if (operation === 'get') {
-				for (let i = 0; i < items.length; i++) {
-					const paymentRequestId = this.getNodeParameter('paymentRequestId', i) as string;
-
-					try {
-						const responseData = await apiRequest.call(this, {
-							url: `/api/v1/stores/${storeId}/payment-requests/${paymentRequestId}`,
-							method: 'GET',
-						});
-						returnData.push(responseData);
-					} catch (error) {
-						if (this.continueOnFail()) {
-							returnData.push({ error: error.toString() });
-						}
-						throw new NodeApiError(this.getNode(), error as JsonObject);
-					}
-				}
-			} else {
-				throw new NodeOperationError(this.getNode(), `The operation "${operation}" is not supported for payment requests!`);
 			}
-		} else {
-			throw new NodeOperationError(this.getNode(), `The resource "${resource}" is not supported!`);
 		}
 
 		return [this.helpers.returnJsonArray(returnData)];
 	}
+}
+
+async function executeForItem(context: IExecuteFunctions, itemIndex: number) {
+	const resource = context.getNodeParameter('resource', 0) as string;
+	const operation = context.getNodeParameter('operation', 0) as string;
+
+	if (resource === 'paymentRequest') {
+		if (operation === 'create') {
+			return createPaymentRequest(context, itemIndex);
+		} else if (operation === 'get') {
+			return getPaymentRequest(context, itemIndex);
+		} else {
+			throw new NodeOperationError(context.getNode(), `The operation "${operation}" is not supported for payment requests!`);
+		}
+	} else {
+		throw new NodeOperationError(context.getNode(), `The resource "${resource}" is not supported!`);
+	}
+}
+
+async function createPaymentRequest(context: IExecuteFunctions, itemIndex: number) {
+	const storeId = context.getNodeParameter('storeId', 0) as string;
+	const amount = context.getNodeParameter('amount', itemIndex) as number;
+	const title = context.getNodeParameter('title', itemIndex) as string;
+	const additionalFields = context.getNodeParameter('additionalFields', itemIndex) as {
+		fieldValues?: Array<{
+			fieldName: string;
+			fieldValue: string;
+		}>
+	};
+
+	const body: IDataObject = {
+		amount,
+		title,
+	};
+	(additionalFields.fieldValues ?? []).forEach(({ fieldName, fieldValue }) => {
+		body[fieldName] = fieldValue
+	})
+
+	const responseData = await apiRequest.call(context, {
+		url: `/api/v1/stores/${storeId}/payment-requests`,
+		method: 'POST',
+		body,
+	});
+	return responseData;
+}
+
+async function getPaymentRequest(context: IExecuteFunctions, itemIndex: number) {
+	const storeId = context.getNodeParameter('storeId', 0) as string;
+	const paymentRequestId = context.getNodeParameter('paymentRequestId', itemIndex) as string;
+
+	const responseData = await apiRequest.call(context, {
+		url: `/api/v1/stores/${storeId}/payment-requests/${paymentRequestId}`,
+		method: 'GET',
+	});
+	return responseData;
 }
