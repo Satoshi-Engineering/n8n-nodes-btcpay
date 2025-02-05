@@ -1,6 +1,19 @@
 # Changelog
 
 
+## v0.1.8
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.7...v0.1.8)
+
+### 📖 Documentation
+
+- Add package name to README ([65b58a0](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/65b58a0))
+- Add more explanation to the trigger node ([0a2013c](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/0a2013c))
+
+### ❤️ Contributors
+
+- Thomas Schagerl <tom@satoshiengineering.com>
+
 ## v0.1.7
 
 [compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.6...v0.1.7)
