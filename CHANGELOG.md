@@ -1,6 +1,23 @@
 # Changelog
 
 
+## v0.1.9
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.8...v0.1.9)
+
+### 🚀 Enhancements
+
+- Trigger node accept test data from btcpay when testing a paymentRequestCompleted webhook using PaymentStatusChanged event in btcpay ([1109857](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/1109857))
+
+### 💅 Refactors
+
+- Clean code action node a bit ([b9ea3ae](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/b9ea3ae))
+- Clean code trigger node + fix action node refactoring ([4ca41f5](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/4ca41f5))
+
+### ❤️ Contributors
+
+- Thomas Schagerl <tom@satoshiengineering.com>
+
 ## v0.1.8
 
 [compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.7...v0.1.8)
