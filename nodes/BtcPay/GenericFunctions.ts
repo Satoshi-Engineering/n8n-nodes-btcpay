@@ -18,13 +18,18 @@ export async function apiRequest(
 }
 
 export async function getStores(this: IAllExecuteFunctions) {
+  const defaultResponse = [{ name: 'No stores available', value: 'none' }];
+
   try {
     const responseData = await apiRequest.call(this, {
       url: `/api/v1/stores`,
       method: 'GET',
     });
+    if (responseData.length === 0) {
+      return defaultResponse;
+    }
     return responseData.map((store: IDataObject) => ({ name: store.name, value: store.id }));
   } catch {
-    return [{ name: 'No Store', value: 'none' }];
+    return defaultResponse;
   }
 }

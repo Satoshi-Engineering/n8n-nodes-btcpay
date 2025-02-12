@@ -43,6 +43,17 @@ export class BtcPay implements INodeType {
 					loadOptionsMethod: 'getStores',
 				},
 			},
+      {
+        displayName: 'If no stores are available, ensure that your API key has the btcpay.store.canviewstoresettings permission enabled.',
+        name: 'storeSelectionInformation',
+        type: 'notice',
+        default: '',
+				displayOptions: {
+					show: {
+						storeId: ['none'],
+					},
+				},
+      },
 			{
 				displayName: 'Resource',
 				name: 'resource',

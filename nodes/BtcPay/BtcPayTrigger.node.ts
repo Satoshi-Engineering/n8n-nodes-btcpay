@@ -54,10 +54,15 @@ export class BtcPayTrigger implements INodeType {
 				},
 			},
       {
-        displayName: 'This node automatically generates a Webhook in the selected BTCpay Server store when your n8n workflow is activated. No need to create it manually.',
-        name: 'webhookInformation',
+        displayName: 'If no stores are available, ensure that your API key has the btcpay.store.canviewstoresettings permission enabled.',
+        name: 'storeSelectionInformation',
         type: 'notice',
         default: '',
+				displayOptions: {
+					show: {
+						storeId: ['none'],
+					},
+				},
       },
 			{
 				displayName: 'Event',
@@ -71,6 +76,12 @@ export class BtcPayTrigger implements INodeType {
           value: 'paymentRequestCompleted',
         }]
 			},
+      {
+        displayName: 'This node automatically generates a Webhook in the selected BTCpay Server store when your n8n workflow is activated. No need to create it manually.',
+        name: 'webhookInformation',
+        type: 'notice',
+        default: '',
+      },
       {
         displayName: 'You can test this webhook in BTCpay Server by triggering the "Payment Request Status Changed" event. However, the status will always be "Pending". The output will include the "paymentRequestId" along with other details. For more information, refer to the BTCpay Server API documentation.',
         name: 'webhookTesting',
