@@ -127,6 +127,18 @@ export class BtcPay implements INodeType {
 					}
 				},
 			},
+      {
+        displayName: 'You can add extra details to the payment request by manually including fields (e.g., Field Name: "currency", Field Value: "BTC"). Refer to the BTCPay API documentation for more available options.',
+        name: 'storeSelectionInformation',
+        type: 'notice',
+        default: '',
+				displayOptions: {
+					show: {
+						resource: ['paymentRequest'],
+						operation: ['create']
+					},
+				},
+      },
 			{
 				displayName: 'Additional Fields',
 				name: 'additionalFields',
