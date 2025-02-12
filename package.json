@@ -1,6 +1,6 @@
 {
   "name": "@satoshiengineering/n8n-nodes-btcpay",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "private": false,
   "description": "BtcPay integration for n8n",
   "keywords": [

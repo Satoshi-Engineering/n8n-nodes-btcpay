@@ -1,6 +1,22 @@
 # Changelog
 
 
+## v0.1.10
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.9...v0.1.10)
+
+### 💅 Refactors
+
+- Add hint to store selection if none is selected ([428b2f5](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/428b2f5))
+
+### 📖 Documentation
+
+- Add hint to additional fields for payment request creation ([517667d](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/517667d))
+
+### ❤️ Contributors
+
+- Thomas Schagerl <tom@satoshiengineering.com>
+
 ## v0.1.9
 
 [compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.8...v0.1.9)
