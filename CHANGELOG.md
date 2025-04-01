@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.11
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.10...v0.1.11)
+
+### 🏡 Chore
+
+- Audit fix ([caf985a](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/caf985a))
+
+### ❤️ Contributors
+
+- Thomas Schagerl <tom@satoshiengineering.com>
+
 ## v0.1.10
 
 [compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.9...v0.1.10)
