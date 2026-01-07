@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.1.13
+
+[compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.12...v0.1.13)
+
+### 🏡 Chore
+
+- Audit fix ([2eb8635](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/commit/2eb8635))
+
+### ❤️ Contributors
+
+- Dr-erych <dave@satoshiengineering.com>
+
 ## v0.1.12
 
 [compare changes](https://github.com/Satoshi-Engineering/n8n-nodes-btcpay/compare/v0.1.11...v0.1.12)
